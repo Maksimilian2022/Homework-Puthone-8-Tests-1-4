@@ -6,6 +6,7 @@ class Student:
         self.finished_courses = []
         self.courses_in_progress = []
         self.grades = []
+        self.grade_avarage = []
 
     def add_courses(self, course_name):
         self.finished_course.append(course_name)
@@ -27,17 +28,16 @@ class Student:
         print(self.finished_courses)
         return ' '
 
-    def compare_students(self, students):
-        dict_of_grades = []
-        for best in students:
-            if isinstance(best, Student):
-                tuple_grade = (sum(best.grades) / len(best.grades), best.surname)
-                dict_of_grades.append(tuple_grade)
-            else:
-                print('Вы что-то напутали')
-        for i in dict_of_grades:
-            print(i[0], ':', i[1])
-        return
+    def __lt__(self, other):
+        student = [self, other]
+
+        if not isinstance(other, Student):
+            print('Не сравнимые классы')
+            return
+        for best in student:
+            tuple_grade = (sum(best.grades) / len(best.grades))
+            best.grade_avarage.append(tuple_grade)
+        return self.grade_avarage[-1] < other.grade_avarage[-1]
 
 
 
@@ -59,6 +59,7 @@ class Lector(Mentor):
         gr = []
         self.grade_lectors = gr
         self.grade_lectors_list = {course: gr}
+        self.grade_lectors_avarage = []
 
     def __str__(self, name, surname):
         print('Имя: ', name)
@@ -68,18 +69,17 @@ class Lector(Mentor):
             print('Средняя оценка за лекцию: ', ratyng)
         return ' '
 
-    def compare_lectors(self, lectors):
-        dict_of_grades = []
-        for best in lectors:
-            if isinstance(best, Lector):
-                tuple_grade = (sum(best.grade_lectors) / len(best.grade_lectors), best.surname)
-                dict_of_grades.append(tuple_grade)
+    def __lt__(self, other):
+        mentor = [self, other]
 
-            else:
-                print('Вы что-то напутали')
-        for i in dict_of_grades:
-            print(i[0], ':', i[1])
-        return
+        if not isinstance(other, Mentor):
+            print('Не сравнимые классы')
+            return
+        for best in mentor:
+            tuple_grade = (sum(best.grade_lectors) / len(best.grade_lectors))
+            best.grade_lectors_avarage.append(tuple_grade)
+        return self.grade_lectors_avarage[-1] < other.grade_lectors_avarage[-1]
+
 
 
 class Reviewer(Mentor):
@@ -128,11 +128,12 @@ print('vsfvfv')
 #Попробуем реализовать сравнение по средней оценке
 best_student.grades = 7, 9, 8
 print(best_student.grades, advanced_student.grades)
-best_student.compare_students([best_student, advanced_student])
+print('Сравнение студентов', best_student < advanced_student)
 print('Дальше с лекторами ########################')
 cool_lector = Lector('Python')
-cool_lector.grade_lectors = 5,7
-best_lector.grade_lectors = 6,4
+cool_lector.grade_lectors = 7,7
+best_lector.grade_lectors = 6,6
 best_lector.surname = "JIm"
 cool_lector.surname = "Mel"
-best_lector.compare_lectors([best_lector, cool_lector])
+print(best_lector.grade_lectors)
+print(best_lector > cool_lector)
